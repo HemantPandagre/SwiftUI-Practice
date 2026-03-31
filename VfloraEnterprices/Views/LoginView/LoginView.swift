@@ -19,9 +19,7 @@ struct LoginView: BaseView {
     
     @EnvironmentObject var loader: LoaderService
     @AppStorageCodable("currentUser") var user: User?
-    
-    @State private var username: String = "Hemant"
-    @State private var password: String = "1234"
+    @State private var loginData: LoginData = .init(username: "", password: "")
     @State private var isForgotPassword: Bool = false
     @State private var isDashboardNav: Bool = false
     @State private var isSignupNav: Bool = false
@@ -74,7 +72,7 @@ struct LoginView: BaseView {
                 user = User.empty()
             }
             DispatchQueue.main.asyncAfter(deadline: .now()+1) {
-                if username.isEmpty {
+                if loginData.isEmpty {
                     focusedField = .username
                 }
             }
@@ -86,7 +84,7 @@ struct LoginView: BaseView {
         } message: {
             Text(alertMessage)
         }
-       
+        
     }
     
     var appLoginIcon: some View {
@@ -111,10 +109,10 @@ struct LoginView: BaseView {
     
     var fieldsView: some View {
         Group {
-            CustomTextField.normalField(icon: "envelope", placeholder: "Enter username", focusState: $focusedField, fieldIdentifier: .username, fieldText: $username)
+            CustomTextField.normalField(icon: "envelope", placeholder: "Enter username", focusState: $focusedField, fieldIdentifier: .username, fieldText: $loginData.username)
             
             if !isForgotPassword {
-                CustomTextField.secureField(icon: "lock", placeholder: "Enter Password", focusState: $focusedField, fieldIdentifier: .password, fieldText: $password)
+                CustomTextField.secureField(icon: "lock", placeholder: "Enter Password", focusState: $focusedField, fieldIdentifier: .password, fieldText: $loginData.password)
             }
         }
     }
@@ -168,23 +166,18 @@ struct LoginView: BaseView {
     
     func validationSignIn() {
         alertTitle = "Error"
-        guard !username.isEmpty else {
-            alertMessage = "Please enter username"
-            showAlert.toggle()
+        if let usernameError = loginData.$username {
+            alertMessage = usernameError
+            showAlert = true
             return
         }
         
-        guard username.count >= 3 else {
-            alertMessage = "Please enter valid username"
-            showAlert.toggle()
+        if let passwordError = loginData.$password {
+            alertMessage = passwordError
+            showAlert = true
             return
         }
         
-        guard !password.isEmpty else {
-            alertMessage = "Please enter password"
-            showAlert.toggle()
-            return
-        }
         focusedField = nil
         loader.show()
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
