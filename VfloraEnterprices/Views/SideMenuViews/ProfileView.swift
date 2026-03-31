@@ -51,17 +51,23 @@ struct ProfileView: BaseView {
 
     var rootView: some View {
         ZStack {
-            ScrollView {
+            VStack {
+                ScrollView {
+                    VStack() {
+                        if isEditable || isSignup {
+                            editableUserFields
+                        } else {
+                            displayUserDetailsView
+                        }
+                    }
+                }
+
+                Spacer()
+                
                 if isEditable || isSignup {
-                    VStack() {
-                        editableUserFields
-                        saveCancelButtonsView
-                    }
+                    saveCancelButtonsView
                 } else {
-                    VStack() {
-                        displayUserDetailsView
-                        editButtonView
-                    }
+                    editButtonView
                 }
             }
             .padding(.horizontal, 20)

@@ -17,15 +17,18 @@ struct CompanyDetailView: BaseView {
             
             
             VStack(alignment: .leading) {
-                Text("Vflora: Elegance in Bloom")
+                Text("Vflora: \nElegance in Bloom")
                     .font(Font.title.bold())
                     .padding(.top, 20)
                 
                 Text("Vflora is a premier floral design studio dedicated to the art of botanical storytelling. We specialize in creating sophisticated, custom arrangements that blend timeless elegance with modern flair. Whether for a grand event or a thoughtful personal gesture, Vflora transforms nature's finest elements into unforgettable visual experiences.")
-                    .font(Font.caption.italic())
+                    .padding(.top, 10)
+                    .font(Font.caption)
                     .foregroundStyle(.gray)
+                    .lineSpacing(10)
             }
             .padding()
+            .padding(.horizontal, 30)
             
             Spacer()
             CopyrightLabel()

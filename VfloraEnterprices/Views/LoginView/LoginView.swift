@@ -43,10 +43,8 @@ struct LoginView: BaseView {
     var rootView: some View {
         ZStack {
             VStack {
-                VStack(alignment: .center, spacing: 30) {
+                VStack() {
                     appLoginIcon
-                        .padding(.top, 50)
-                    Spacer()
                     
                     VStack(spacing: 20) {
                         welcomeText
@@ -57,14 +55,15 @@ struct LoginView: BaseView {
                             EmptyView()
                         })
                     }
+                    .padding(.top, 30)
                 }
-                .padding(30)
-                .padding(.bottom, 100)
                 
                 Spacer()
                 CopyrightLabel()
                     .padding(10)
             }
+            .padding(.top, 30)
+            .padding(.horizontal, 30)
             
             if loader.isShowing {
                 GlobalLoaderView(message: "Logging in...")
@@ -75,7 +74,9 @@ struct LoginView: BaseView {
                 user = User.empty()
             }
             DispatchQueue.main.asyncAfter(deadline: .now()+1) {
-                focusedField = .username
+                if username.isEmpty {
+                    focusedField = .username
+                }
             }
         })
         .alert(alertTitle, isPresented: $showAlert) {

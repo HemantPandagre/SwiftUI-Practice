@@ -14,6 +14,7 @@ struct CustomTextField<Value: Hashable>: View {
     let fieldIdentifier: Value
     @Binding var fieldText: String
     @State private var isSecure: Bool = false
+    @State private var eyeButtonEnabled: Bool
 
     
     // MARK: - Init #1 (primary): covers both normal and password fields
@@ -24,6 +25,7 @@ struct CustomTextField<Value: Hashable>: View {
           self.fieldIdentifier = fieldIdentifier
           self._fieldText = fieldText
           self._isSecure = State(initialValue: isSecure ? true : false)
+          self.eyeButtonEnabled = isSecure
       }
 
     
@@ -41,13 +43,15 @@ struct CustomTextField<Value: Hashable>: View {
                 if isSecure {
                     SecureField(placeholder, text: $fieldText)
                         .focused(focusState, equals: fieldIdentifier)
+                } else {
+                    TextField(placeholder, text: $fieldText)
+                        .focused(focusState, equals: fieldIdentifier)
+                }
+                if eyeButtonEnabled {
                     Button(action: { isSecure.toggle() }) {
                         Image(systemName: isSecure ? "eye.slash" : "eye")
                             .foregroundColor(.vfGray)
                     }
-                } else {
-                    TextField(placeholder, text: $fieldText)
-                        .focused(focusState, equals: fieldIdentifier)
                 }
             }
 

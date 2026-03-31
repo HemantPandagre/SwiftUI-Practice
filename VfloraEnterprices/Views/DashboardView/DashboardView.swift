@@ -121,7 +121,7 @@ struct DashboardView: BaseView {
                 
                 
                 if loader.isShowing {
-                    let message = isLoggingout ? "Logging out..." : "Logging in..."
+                    let message = isLoggingout ? "Logging out..." : "Loading Data..."
                     GlobalLoaderView(message: message)
                 }
                 

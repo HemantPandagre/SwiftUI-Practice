@@ -7,18 +7,6 @@
 
 import SwiftUI
 
-struct BackgroundColorModifier: ViewModifier {
-    var opacity: Double = 1.0
-    
-    func body(content: Content) -> some View {
-        content
-            .background(
-                LinearGradient(
-                    colors: [.blue, .purple],
-                    startPoint: .topLeading, endPoint: .bottomTrailing).opacity(opacity) )
-    }
-}
-
 struct PrimaryButtonModifier: ViewModifier {
     var opacity: Double = 1.0
     

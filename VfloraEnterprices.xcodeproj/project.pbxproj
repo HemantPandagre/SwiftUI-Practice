@@ -10,33 +10,9 @@
 		C374FF772F5487C300B34400 /* VfloraEnterprices.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VfloraEnterprices.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		C374FF9B2F54BFAE00B34400 /* Exceptions for "VfloraEnterprices" folder in "VfloraEnterprices" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"Subviews/Color+extension",
-			);
-			target = C374FF762F5487C300B34400 /* VfloraEnterprices */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		C374FF9C2F54BFAE00B34400 /* Exceptions for "VfloraEnterprices" folder in "Compile Sources" phase from "VfloraEnterprices" target */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = C374FF732F5487C300B34400 /* Sources */;
-			membershipExceptions = (
-				"Subviews/Color+extension",
-			);
-		};
-/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		C374FF792F5487C300B34400 /* VfloraEnterprices */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				C374FF9B2F54BFAE00B34400 /* Exceptions for "VfloraEnterprices" folder in "VfloraEnterprices" target */,
-				C374FF9C2F54BFAE00B34400 /* Exceptions for "VfloraEnterprices" folder in "Compile Sources" phase from "VfloraEnterprices" target */,
-			);
 			path = VfloraEnterprices;
 			sourceTree = "<group>";
 		};

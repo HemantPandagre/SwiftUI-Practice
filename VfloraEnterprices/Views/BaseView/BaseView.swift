@@ -35,30 +35,34 @@ struct NavigationSyncView<Content: View>: View {
     @State private var localPushTrigger: Bool = false
     
     var body: some View {
-        VStack {
-            NavigationLink(destination: CompanyDetailView(),isActive: $localPushTrigger) {
-                EmptyView()}
-            content()
-                .onAppear {
-                    navManager.isCompanyDetailActive = false
-                    if let config = config {
+        if let config = config {
+            VStack {
+                NavigationLink(destination: CompanyDetailView(),isActive: $localPushTrigger) {
+                    EmptyView()}
+                content()
+                    .onAppear {
                         navManager.currentConfig = config
                     }
-                }
-                .onChange(of: navManager.isCompanyDetailActive) { newValue in
-                    if newValue && navManager.currentConfig?.title == config?.title  {
-                        localPushTrigger = true
-                        navManager.isCompanyDetailActive = false // Reset the "remote control"
+                    .onChange(of: navManager.isCompanyDetailActive) { newValue in
+                        if newValue && navManager.currentConfig?.title == config.title  {
+                            localPushTrigger = true
+                            navManager.isCompanyDetailActive = false // Reset the "remote control"
+                        }
                     }
-                }
-                .onChange(of: navManager.shouldPerformBack) { newValue in
-                    if newValue && config?.defaultBack == true {
-                        // Perform the actual Pop
-                        dismiss()
-                        
-                        // Reset the trigger so it doesn't pop multiple screens
-                        navManager.shouldPerformBack = false
+                    .onChange(of: navManager.shouldPerformBack) { newValue in
+                        if newValue && config.defaultBack == true {
+                            // Perform the actual Pop
+                            dismiss()
+                            
+                            // Reset the trigger so it doesn't pop multiple screens
+                            navManager.shouldPerformBack = false
+                        }
                     }
+            }
+        } else {
+            content()
+                .onAppear {
+                    navManager.currentConfig = nil
                 }
         }
     }
