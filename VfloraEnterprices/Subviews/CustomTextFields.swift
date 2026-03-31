@@ -28,8 +28,8 @@ struct CustomTextField<Value: Hashable>: View {
 
     
     var body: some View {
-        VStack(spacing: 8) {
-            HStack(spacing: 12) {
+        VStack() {
+            HStack() {
                 // Leading Icon
                 if let icon = icon, !icon.isEmpty {
                   Image(systemName: icon)
@@ -50,7 +50,6 @@ struct CustomTextField<Value: Hashable>: View {
                         .focused(focusState, equals: fieldIdentifier)
                 }
             }
-            .padding(.vertical, 4)
 
             // 1pt Bottom Border
             Rectangle()

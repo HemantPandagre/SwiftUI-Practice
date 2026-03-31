@@ -53,17 +53,18 @@ struct ProfileView: BaseView {
         ZStack {
             ScrollView {
                 if isEditable || isSignup {
-                    VStack(spacing: 20) {
+                    VStack() {
                         editableUserFields
                         saveCancelButtonsView
                     }
                 } else {
-                    VStack(spacing: 20) {
+                    VStack() {
                         displayUserDetailsView
                         editButtonView
                     }
                 }
             }
+            .padding(.horizontal, 20)
             
             if loader.isShowing {
                 GlobalLoaderView(message: "Saving User Details...")
@@ -89,7 +90,7 @@ struct ProfileView: BaseView {
 // Edit Form
 extension ProfileView {
     var editableUserFields: some View {
-        VStack() {
+        VStack(spacing: 20) {
             fieldView(heading: "First name", placeHolder: "Enter First name", fieldIdentifier: .firstname, focusState: $focusedField, fieldText: $fieldData.firstName)
             
             fieldView(heading: "Last name", placeHolder: "Enter Last name", fieldIdentifier: .lastname, focusState: $focusedField, fieldText: $fieldData.lastName)
@@ -104,7 +105,7 @@ extension ProfileView {
             
             Spacer()
         }
-        .padding(.top, 30)
+        .padding(.top, 20)
     }
     
     func fieldView(heading: String, placeHolder: String, fieldIdentifier: ProfileField, focusState: FocusState<ProfileField?>.Binding, fieldText: Binding<String>) -> some View {
@@ -114,7 +115,6 @@ extension ProfileView {
                 .font(.headline)
             CustomTextField.normalField(placeholder: placeHolder, focusState: focusState, fieldIdentifier: fieldIdentifier, fieldText: fieldText)
         }
-        .padding()
     }
     
     var saveCancelButtonsView: some View {
@@ -133,15 +133,13 @@ extension ProfileView {
                     .modifier(CancelButtonModifier())
             }
         }
-        .padding(.leading, 20)
-        .padding(.trailing, 20)
     }
 }
 
 // View Form
 extension ProfileView {
     var displayUserDetailsView: some View {
-        VStack() {
+        VStack(spacing: 20) {
             detailView(heading: "Full Name", subheading: user?.fullName ?? "")
             detailView(heading: "Designation", subheading: user?.designation ?? "")
             detailView(heading: "Email", subheading: user?.email ?? "")
@@ -149,7 +147,7 @@ extension ProfileView {
             detailView(heading: "Address", subheading: user?.address ?? "")
             Spacer()
         }
-        .padding(.top, 30)
+        .padding(.top, 20)
     }
     
     func detailView(heading: String, subheading: String) -> some View {
@@ -161,7 +159,6 @@ extension ProfileView {
                 .font(.subheadline)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding()
     }
     
     var editButtonView: some View {

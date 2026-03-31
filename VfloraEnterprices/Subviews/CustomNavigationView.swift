@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct NavigationBarConfig {
     var title: String
@@ -15,12 +16,15 @@ struct NavigationBarConfig {
     var rightButtons: [AnyView] = []
 }
 
+class NavigationManager: ObservableObject {
+    @Published var currentConfig: NavigationBarConfig?
+    @Published var shouldPerformBack: Bool = false
+    @Published var isCompanyDetailActive: Bool = false
+}
 
-struct CustomNavigationView<Content: View>: View {
+struct CustomNavigationView: View {
+    @ObservedObject var navManager: NavigationManager
     let config: NavigationBarConfig
-    let content: () -> Content
-    @State private var isCompanyDetailActive: Bool = false
-    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         VStack(spacing: 0) {
@@ -30,7 +34,7 @@ struct CustomNavigationView<Content: View>: View {
                     HStack(spacing: 12) {
                         if config.defaultBack {
                             Button {
-                                dismiss()
+                                navManager.shouldPerformBack = true
                             } label: {
                                 Image(systemName: "arrow.backward")
                                     .foregroundStyle(Color.white)
@@ -46,23 +50,19 @@ struct CustomNavigationView<Content: View>: View {
                     HStack(spacing: 12) {
                         if config.defaultLogo {
                             Button {
-                                tappedCompanyLogo()
+                                navManager.isCompanyDetailActive = true
                             } label: {
                                 Image("vfloraButtonImage")
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 100, height: 30)
                             }
-                            NavigationLink(destination: CompanyDetailView(), isActive: $isCompanyDetailActive, label: {
-                                EmptyView()
-                            })
                         }
                     
                         ForEach(0..<config.rightButtons.count, id: \.self) { i in
                             config.rightButtons[i]
                         }
                     }
-                    .padding(.horizontal, -20)
                 }
                 .padding(.horizontal, 12)
                 .frame(height: 52)
@@ -77,12 +77,6 @@ struct CustomNavigationView<Content: View>: View {
                     .frame(maxWidth: .infinity, alignment: .center)
             }
             .modifier(BackgroundColorModifier())
-
-            content()
         }
-    }
-    
-    func tappedCompanyLogo() {
-        isCompanyDetailActive.toggle()
     }
 }

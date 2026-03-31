@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct DashboardView: BaseView {
-    
     var navigationBarConfig: NavigationBarConfig? { NavigationBarConfig(title: "Dashboard", defaultBack: false, leftButtons: navLeftButtons) }
     
     var navLeftButtons: [AnyView] {
@@ -59,31 +58,15 @@ struct DashboardView: BaseView {
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHGrid(rows: rows, spacing: 10, pinnedViews: []) {
                             ForEach(categories, id: \.self) { category in
-                                
-                                Button {
-                                    print("category: \(category.title)")
-                                } label: {
-                                    VStack {
-                                        Image(systemName: category.imageName)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 30, height: 30)
-                                        Text(category.title)
-                                            .font(Font.caption.bold())
-                                    }
-                                    .frame(width: 80, height: 80, alignment: .center)
-                                    .background(Color.gray.opacity(0.4))
-                                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                                    //.shadow(radius: 10)
+                                NavigationLink(destination: CategoryView(category: category)) {
+                                    CategoryCard(name: category.title, icon: category.imageName)
                                 }
-                                
                             }
                         }
                         .padding(.leading, 10)
                         .padding(.trailing, 10)
                     }
                     .padding(.top, 10)
-                    
                     
                     Text("Bookings")
                         .font(Font.headline.bold())
@@ -101,25 +84,25 @@ struct DashboardView: BaseView {
                     .padding()
                     .background(Color.gray.opacity(0.2))   // header background
                     .zIndex(1) // keep it above scroll content
-
+                    
                     
                     ScrollView {
-                                LazyVGrid(columns: columns, spacing: 12) {
-                                    // Header row
-                                    
-
-                                    // Data rows
-                                    ForEach(1..<51) { index in
-                                        Text("\(index)")
-                                        Text("Hemant")
-                                        Text("Clothes")
-                                        Text("\(index * 2)")
-                                        Text("Received")
-                                    }
-                                }
-                                .padding()
+                        LazyVGrid(columns: columns, spacing: 12) {
+                            // Header row
+                            
+                            
+                            // Data rows
+                            ForEach(1..<51) { index in
+                                Text("\(index)")
+                                Text("Hemant")
+                                Text("Clothes")
+                                Text("\(index * 2)")
+                                Text("Received")
                             }
-
+                        }
+                        .padding()
+                    }
+                    
                 }
                 
                 SideMenuView(isSidebarOpen: $isSidebarOpen, showLogoutAlert: $showAlert, selectedItem: $selectedItem)
@@ -180,6 +163,25 @@ struct DashboardView: BaseView {
             } message: {
                 Text("Do You want to Logout?")
             }
+    }
+}
+
+struct CategoryCard: View {
+    let name: String
+    let icon: String
+    
+    var body: some View {
+        VStack {
+            Image(systemName: icon)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 30, height: 30)
+            Text(name)
+                .font(Font.caption.bold())
+        }
+        .frame(width: 80, height: 80, alignment: .center)
+        .background(Color.gray.opacity(0.4))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 }
 
