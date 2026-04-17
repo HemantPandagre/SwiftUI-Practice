@@ -12,7 +12,7 @@ enum ProfileField {
 }
 
 enum ProfileMessages {
-    case noChange, successfull, signupPending, signupSuccess
+    case noChange, successfull, signupPending, signupSuccess, emailInvalid, phoneInvalid
     
     var title: String {
         switch self {
@@ -20,6 +20,8 @@ enum ProfileMessages {
         case .successfull: return "Profile updated successfully"
         case .signupPending: return "Profile Pending"
         case .signupSuccess: return "Profile updated successfully"
+        case .emailInvalid: return "Email is invalid"
+        case .phoneInvalid: return "Phone is invalid"
         }
     }
     
@@ -29,6 +31,8 @@ enum ProfileMessages {
         case .successfull: return "Your profile has been updated successfully."
         case .signupPending: return "Please fill all fields to create your profile."
         case .signupSuccess: return "Hurry! Profile created successfully 🚀"
+        case .emailInvalid: return "Please enter valid email"
+        case .phoneInvalid: return "Please enter valid phone number"
         }
     }
 }
@@ -42,7 +46,7 @@ struct ProfileView: BaseView {
     @State private var isEditable: Bool = false
     
     @FocusState private var focusedField: ProfileField?
-    @State private var fieldData = User.empty()
+    @State private var fieldData = User()
     
     @State private var alert: ProfileMessages = .noChange
     @State private var showAlert: Bool = false
@@ -78,7 +82,7 @@ struct ProfileView: BaseView {
         }
         .onAppear {
             if !isSignup {
-                fieldData = user ?? User.empty()
+                fieldData = user ?? User()
             }
         }
         .alert(alert.title, isPresented: $showAlert) {
@@ -192,6 +196,19 @@ extension ProfileView {
         }
         else // if existing user data changed
         {
+            if !fieldData.$email.isValid {
+                alert = .emailInvalid
+                showAlert.toggle()
+                return
+            }
+            
+            if !fieldData.$phone.isValid {
+                alert = .phoneInvalid
+                showAlert.toggle()
+                return
+            }
+
+            
             user = fieldData
             loader.show()
             DispatchQueue.main.asyncAfter(deadline: .now()+2) {

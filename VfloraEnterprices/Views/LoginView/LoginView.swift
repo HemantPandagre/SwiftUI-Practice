@@ -19,22 +19,12 @@ struct LoginView: BaseView {
     
     @EnvironmentObject var loader: LoaderService
     @AppStorageCodable("currentUser") var user: User?
-    @State private var loginData: LoginData = .init(username: "", password: "")
-    @State private var isForgotPassword: Bool = false
+
+    @FocusState private var focusedField: LoginField?
     @State private var isDashboardNav: Bool = false
     @State private var isSignupNav: Bool = false
-    @State private var alertTitle: String = "Error"
-    @State private var alertMessage: String = ""
-    @State private var showAlert: Bool = false
-    @FocusState private var focusedField: LoginField?
     
-    private var welcomeLabelText: String {
-        isForgotPassword ? "Reset Password" : "Welcome to Vflora"
-    }
-    
-    private var loginButtonText: String {
-        isForgotPassword ? "Send Reset Link" : "Login"
-    }
+    @StateObject private var viewmodel: LoginViewModel = LoginViewModel()
     
     var screenTitle: String? { nil }
     
@@ -69,20 +59,20 @@ struct LoginView: BaseView {
         }
         .onAppear(perform: {
             if user == nil {
-                user = User.empty()
+                user = User()
             }
             DispatchQueue.main.asyncAfter(deadline: .now()+1) {
-                if loginData.isEmpty {
+                if viewmodel.loginData.isEmpty {
                     focusedField = .username
                 }
             }
         })
-        .alert(alertTitle, isPresented: $showAlert) {
+        .alert(viewmodel.alertTitle, isPresented: $viewmodel.showAlert) {
             Button("Ok") {
                 
             }
         } message: {
-            Text(alertMessage)
+            Text(viewmodel.alertMessage)
         }
         
     }
@@ -95,7 +85,7 @@ struct LoginView: BaseView {
     }
     
     var welcomeText: some View {
-        Text(welcomeLabelText)
+        Text(viewmodel.welcomeLabelText)
             .font(.largeTitle)
             .fontWeight(.bold)
             .foregroundStyle(Color.accent)
@@ -109,10 +99,10 @@ struct LoginView: BaseView {
     
     var fieldsView: some View {
         Group {
-            CustomTextField.normalField(icon: "envelope", placeholder: "Enter username", focusState: $focusedField, fieldIdentifier: .username, fieldText: $loginData.username)
+            CustomTextField.normalField(icon: "envelope", placeholder: "Enter username", focusState: $focusedField, fieldIdentifier: .username, fieldText: $viewmodel.loginData.username)
             
-            if !isForgotPassword {
-                CustomTextField.secureField(icon: "lock", placeholder: "Enter Password", focusState: $focusedField, fieldIdentifier: .password, fieldText: $loginData.password)
+            if !viewmodel.isForgotPassword {
+                CustomTextField.secureField(icon: "lock", placeholder: "Enter Password", focusState: $focusedField, fieldIdentifier: .password, fieldText: $viewmodel.loginData.password)
             }
         }
     }
@@ -120,9 +110,9 @@ struct LoginView: BaseView {
     var forgotPasswordButton: some View {
         HStack() {
             Spacer()
-            if !isForgotPassword {
+            if !viewmodel.isForgotPassword {
                 Button(action: {
-                    isForgotPassword.toggle()
+                    viewmodel.forgotPasswordToggle()
                 }, label: {
                     Text("Forgot Password?")
                         .font(.title2.bold())
@@ -142,18 +132,28 @@ struct LoginView: BaseView {
         
         VStack {
             Button {
-                if (isForgotPassword) {
-                    isForgotPassword.toggle()
+                focusedField = nil
+                if (viewmodel.isForgotPassword) {
+                    viewmodel.forgotPasswordToggle()
                 } else {
-                    validationSignIn()
+                    loader.show()
+                    viewmodel.successHandler = {
+                        user?.setDummyData()
+                        user?.loginStatus = .loggedIn
+                    }
+                    viewmodel.failureHandler = {
+                        loader.hide()
+                    }
+                    viewmodel.validationSignIn()
                 }
             } label: {
-                Text(loginButtonText)
+                Text(viewmodel.loginButtonText)
                     .modifier(PrimaryButtonModifier())
             }
             
-            if !isForgotPassword {
+            if !viewmodel.isForgotPassword {
                 Button {
+                    focusedField = nil
                     user?.loginStatus = .signup
                     isSignupNav.toggle()
                 } label: {
@@ -164,26 +164,7 @@ struct LoginView: BaseView {
         }
     }
     
-    func validationSignIn() {
-        alertTitle = "Error"
-        if let usernameError = loginData.$username {
-            alertMessage = usernameError
-            showAlert = true
-            return
-        }
-        
-        if let passwordError = loginData.$password {
-            alertMessage = passwordError
-            showAlert = true
-            return
-        }
-        
-        focusedField = nil
-        loader.show()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            user?.loginStatus = .loggedIn
-        }
-    }
+    
 }
 
 #Preview {
