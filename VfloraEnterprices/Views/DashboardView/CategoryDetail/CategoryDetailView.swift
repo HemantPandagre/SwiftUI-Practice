@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CategoryView: BaseView {
+struct CategoryDetailView: BaseView {
     var navigationBarConfig: NavigationBarConfig? { NavigationBarConfig(title: category.title)}
     @AppStorageCodable("currentUser") var user: User?
     var category: CategoriesEnum
@@ -16,7 +16,7 @@ struct CategoryView: BaseView {
     var rootView: some View {
         VStack(spacing: 30) {
             Text("Add To Card")
-            NavigationLink(destination: CategoryView(category: .Books), isActive: $clickedOn, label: {EmptyView()})
+            NavigationLink(destination: CategoryDetailView(category: .Books), isActive: $clickedOn, label: {EmptyView()})
             Button {
                 clickedOn.toggle()
             } label: {
