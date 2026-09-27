@@ -24,10 +24,10 @@ struct AppShell: View {
                     LoginView()
                 }
             }
+            .navigationViewStyle(.stack)
             .environmentObject(navManager)
         }
         .environmentObject(loader)
-        .navigationViewStyle(.stack)
         .navigationBarHidden(true) // Hide the Apple default bar
     }
 }

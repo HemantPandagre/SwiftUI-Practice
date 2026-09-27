@@ -35,7 +35,7 @@ struct DashboardView: BaseView {
             ZStack {
                 VStack {
                     CategorySectionView()
-                        .padding(.top, 10)
+                        .padding(.vertical, 10)
                     
                     BookingsSectionView()
                 }

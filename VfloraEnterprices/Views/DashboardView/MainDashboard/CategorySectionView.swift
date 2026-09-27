@@ -9,17 +9,27 @@ import SwiftUI
 struct CategorySectionView: View {
     let categories: [CategoriesEnum] = CategoriesEnum.allCases
     
-    let rows = [
-        GridItem(.fixed(80), spacing: 10),
-        GridItem(.fixed(80), spacing: 10)
-    ]
+    private let cardSize: CGFloat = 80
+    private let gridSpacing: CGFloat = 10
+
+    private var rows: [GridItem] {
+        [
+            GridItem(.fixed(cardSize), spacing: gridSpacing),
+            GridItem(.fixed(cardSize), spacing: gridSpacing)
+        ]
+    }
+
+    /// Two fixed rows plus the spacing between them.
+    private var gridHeight: CGFloat { cardSize * 2 + gridSpacing }
+    private var gridWidth: CGFloat { cardSize * 5 + (gridSpacing * 4) }
+
     
     var body: some View {
         VStack {
             Text("Categories")
                 .font(Font.headline.bold())
                 .foregroundStyle(Color.accentColor)
-                .padding(.top, 10)
+                .padding(.bottom, 10)
             
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHGrid(rows: rows, spacing: 10, pinnedViews: []) {
@@ -29,9 +39,9 @@ struct CategorySectionView: View {
                         }
                     }
                 }
-                .padding(.leading, 10)
-                .padding(.trailing, 10)
+                .padding(.horizontal, 10)
             }
+            .frame(height: gridHeight)
         }
     }
 }

@@ -8,50 +8,90 @@ import SwiftUI
 
 struct BookingsSectionView: View {
     
-    private let columns: [GridItem] = [
-        GridItem(.fixed(50), spacing: 10),
-        GridItem(.flexible(), spacing: 10),
-        GridItem(.flexible(), spacing: 10),
-        GridItem(.fixed(50), spacing: 10),
-        GridItem(.flexible(), spacing: 10)
-    ]
+    private let columnSpacing: CGFloat = 8
     
     var body: some View {
-        VStack {
-            Text("Bookings")
-                .font(Font.headline.bold())
-                .foregroundStyle(Color.accentColor)
-                .padding(.top, 10)
+        GeometryReader { geo in
             
-            // 🔥 FIXED HEADER (does not scroll)
-            HStack() {
-                Text("ID").bold().frame(width: 50, alignment: .leading)
-                Text("Name").bold().frame(maxWidth: .infinity, alignment: .leading)
-                Text("Category").bold().frame(maxWidth: .infinity, alignment: .leading)
-                Text("Qty").bold().frame(width: 60, alignment: .trailing)
-                Text("Status").bold().frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .padding()
-            .background(Color.gray.opacity(0.2))   // header background
-            .zIndex(1) // keep it above scroll content
-            
-            
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 12) {
-                    // Header row
-                    
-                    
-                    // Data rows
-                    ForEach(1..<51) { index in
-                        Text("\(index)")
-                        Text("Hemant")
-                        Text("Clothes")
-                        Text("\(index * 2)")
-                        Text("Received")
+            VStack(spacing: 0) {
+                Text("Bookings")
+                    .font(Font.headline.bold())
+                    .foregroundStyle(Color.accentColor)
+                    .padding(.bottom, 10)
+                
+                let rowWidth = max(geo.size.width - 24, 0)
+                bookingRow(
+                    id: "ID",
+                    name: "Name",
+                    category: "Category",
+                    qty: "Qty",
+                    status: "Status",
+                    isHeader: true,
+                    width: rowWidth
+                )
+                .padding(.horizontal, 12)
+                .padding(.vertical, 10)
+                .background(Color.gray.opacity(0.2))
+                
+                ScrollView {
+                    LazyVStack(spacing: 12) {
+                        ForEach(1..<51, id: \.self) { index in
+                            ZStack {
+                                if (index % 2) == 0 {
+                                    Color.gray.opacity(0.3)
+                                }
+                                
+                                bookingRow(
+                                    id: "\(index)",
+                                    name: "Hemant",
+                                    category: "Clothes",
+                                    qty: "\(index * 2)",
+                                    status: "Received",
+                                    isHeader: false,
+                                    width: rowWidth
+                                )
+                            }
+                        }
                     }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 10)
                 }
-                .padding()
             }
         }
     }
+    
+    private func bookingRow(
+        id: String,
+        name: String,
+        category: String,
+        qty: String,
+        status: String,
+        isHeader: Bool,
+        width: CGFloat
+    ) -> some View {
+        let columnCount: CGFloat = 5
+        let contentWidth = width - columnSpacing * (columnCount - 1)
+        return HStack(spacing: columnSpacing) {
+            cell(id, isHeader: isHeader, alignment: .center)
+                .frame(width: contentWidth * 0.10, alignment: .center)
+            cell(name, isHeader: isHeader, alignment: .leading)
+                .frame(width: contentWidth * 0.36, alignment: .leading)
+            cell(category, isHeader: isHeader, alignment: .leading)
+                .frame(width: contentWidth * 0.18, alignment: .leading)
+            cell(qty, isHeader: isHeader, alignment: .center)
+                .frame(width: contentWidth * 0.18, alignment: .center)
+            cell(status, isHeader: isHeader, alignment: .leading)
+                .frame(width: contentWidth * 0.18, alignment: .leading)
+        }
+        .frame(width: width, alignment: .leading)
+    }
+
+    private func cell(_ text: String, isHeader: Bool, alignment: Alignment) -> some View {
+        Text(text)
+            .font(isHeader ? Font.caption.bold() : Font.caption)
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+            .frame(maxWidth: .infinity, alignment: alignment)
+    }
+
 }
