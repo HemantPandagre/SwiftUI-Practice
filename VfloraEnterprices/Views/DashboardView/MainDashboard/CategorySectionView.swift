@@ -11,43 +11,54 @@ struct CategorySectionView: View {
     
     private let cardSize: CGFloat = 80
     private let gridSpacing: CGFloat = 10
-
-    private var rows: [GridItem] {
-        [
-            GridItem(.fixed(cardSize), spacing: gridSpacing),
-            GridItem(.fixed(cardSize), spacing: gridSpacing)
-        ]
-    }
-
-    /// Two fixed rows plus the spacing between them.
-    private var gridHeight: CGFloat { cardSize * 2 + gridSpacing }
-    private var gridWidth: CGFloat { cardSize * 5 + (gridSpacing * 4) }
-
     
     var body: some View {
-        VStack {
+        VStack(alignment: .center) {
             Text("Categories")
                 .font(Font.headline.bold())
                 .foregroundStyle(Color.accentColor)
                 .padding(.bottom, 10)
             
-            ScrollView(.horizontal, showsIndicators: false) {
-                LazyHGrid(rows: rows, spacing: 10, pinnedViews: []) {
-                    ForEach(categories, id: \.self) { category in
-                        NavigationLink(destination: CategoryDetailView(category: category)) {
-                            CategoryCard(name: category.title, icon: category.imageName)
+            
+            
+            
+            GeometryReader { proxy in
+                let columns = getColoums(proxy: proxy)
+                let rows = ceil(Double(categories.count) / Double(columns.count))
+                 
+                let gridHeight =
+                rows * Double(cardSize) +
+                (rows - 1) * Double(gridSpacing)
+                
+                ScrollView(.vertical, showsIndicators: false) {
+                    LazyVGrid(columns: columns, spacing: 10) {
+                        ForEach(categories, id: \.self) { category in
+                            NavigationLink(destination: CategoryDetailView(category: category)) {
+                                CategoryCard(name: category.title, icon: category.imageName)
+                            }
                         }
                     }
                 }
-                .padding(.horizontal, 10)
+                .frame(height: gridHeight)
             }
-            .frame(height: gridHeight)
         }
+    }
+    
+    private func getColoums(proxy: GeometryProxy) -> [GridItem] {
+        let columnsCount = max(
+            Int(proxy.size.width / (cardSize + gridSpacing)), 1
+        )
+
+        let columns = Array(
+            repeating: GridItem(.fixed(cardSize), spacing: gridSpacing),
+            count: columnsCount
+        )
+        return columns
     }
 }
 
 
-struct CategoryCard: View {
+private struct CategoryCard: View {
     let name: String
     let icon: String
     

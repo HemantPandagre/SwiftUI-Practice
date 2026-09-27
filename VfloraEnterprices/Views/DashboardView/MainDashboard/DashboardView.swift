@@ -33,11 +33,27 @@ struct DashboardView: BaseView {
     
     var rootView: some View {
             ZStack {
-                VStack {
-                    CategorySectionView()
-                        .padding(.vertical, 10)
-                    
-                    BookingsSectionView()
+                GeometryReader { geo in
+                    let isExpanded = geo.size.width > 700
+                    if isExpanded {
+                        HStack(spacing: 0) {
+                            CategorySectionView()
+                                .frame(maxWidth: .infinity)
+                            
+                            Divider()
+                            
+                            BookingsSectionView()
+                                .frame(maxWidth: .infinity)
+                        }
+                    } else {
+                        VStack {
+                            CategorySectionView()
+                                .padding(.vertical, 10)
+                            
+                            
+                            BookingsSectionView()
+                        }
+                    }
                 }
                 
                 SideMenuView(isSidebarOpen: $isSidebarOpen, showLogoutAlert: $showAlert, selectedItem: $selectedItem)
