@@ -43,7 +43,8 @@ struct SideMenuView: View {
     var body: some View {
         GeometryReader { proxy in
             let totalWidth = proxy.size.width
-            let widthRatio = 0.7
+            let isPortrait = proxy.size.height > proxy.size.width
+            let widthRatio = isPortrait ? 0.7 : 0.3
             
             ZStack(alignment: .leading) {
                 if isSidebarOpen {

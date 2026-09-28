@@ -12,7 +12,6 @@ struct BookingsSectionView: View {
     
     var body: some View {
         GeometryReader { geo in
-            
             VStack(spacing: 0) {
                 Text("Bookings")
                     .font(Font.headline.bold())

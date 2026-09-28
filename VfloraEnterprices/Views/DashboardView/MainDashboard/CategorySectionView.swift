@@ -7,61 +7,53 @@
 import SwiftUI
 
 struct CategorySectionView: View {
+    let availableWidth: CGFloat
     let categories: [CategoriesEnum] = CategoriesEnum.allCases
-    
+
     private let cardSize: CGFloat = 80
     private let gridSpacing: CGFloat = 10
-    
+
     var body: some View {
-        VStack(alignment: .center) {
+        VStack(alignment: .center, spacing: 10) {
             Text("Categories")
                 .font(Font.headline.bold())
                 .foregroundStyle(Color.accentColor)
-                .padding(.bottom, 10)
-            
-            
-            
-            
-            GeometryReader { proxy in
-                let columns = getColoums(proxy: proxy)
-                let rows = ceil(Double(categories.count) / Double(columns.count))
-                 
-                let gridHeight =
-                rows * Double(cardSize) +
-                (rows - 1) * Double(gridSpacing)
-                
-                ScrollView(.vertical, showsIndicators: false) {
-                    LazyVGrid(columns: columns, spacing: 10) {
-                        ForEach(categories, id: \.self) { category in
-                            NavigationLink(destination: CategoryDetailView(category: category)) {
-                                CategoryCard(name: category.title, icon: category.imageName)
-                            }
-                        }
+
+            LazyVGrid(columns: columns, spacing: gridSpacing) {
+                ForEach(categories, id: \.self) { category in
+                    NavigationLink(destination: CategoryDetailView(category: category)) {
+                        CategoryCard(name: category.title, icon: category.imageName)
                     }
                 }
-                .frame(height: gridHeight)
             }
+            .frame(height: gridHeight)
         }
+        .frame(maxWidth: .infinity, alignment: .top)
     }
-    
-    private func getColoums(proxy: GeometryProxy) -> [GridItem] {
-        let columnsCount = max(
-            Int(proxy.size.width / (cardSize + gridSpacing)), 1
-        )
 
-        let columns = Array(
+    private var columnCount: Int {
+        guard availableWidth >= cardSize else { return 1 }
+        let count = Int((availableWidth + gridSpacing) / (cardSize + gridSpacing))
+        return max(count, 1)
+    }
+
+    private var columns: [GridItem] {
+        Array(
             repeating: GridItem(.fixed(cardSize), spacing: gridSpacing),
-            count: columnsCount
+            count: columnCount
         )
-        return columns
+    }
+
+    private var gridHeight: CGFloat {
+        let rows = ceil(CGFloat(categories.count) / CGFloat(columnCount))
+        return rows * cardSize + max(rows - 1, 0) * gridSpacing
     }
 }
-
 
 private struct CategoryCard: View {
     let name: String
     let icon: String
-    
+
     var body: some View {
         VStack {
             Image(systemName: icon)

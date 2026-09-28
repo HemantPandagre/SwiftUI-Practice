@@ -36,21 +36,20 @@ struct DashboardView: BaseView {
                 GeometryReader { geo in
                     let isExpanded = geo.size.width > 700
                     if isExpanded {
-                        HStack(spacing: 0) {
-                            CategorySectionView()
-                                .frame(maxWidth: .infinity)
-                            
+                        HStack(alignment: .top, spacing: 0) {
+                            CategorySectionView(availableWidth: geo.size.width / 2)
+                                .frame(maxWidth: .infinity, alignment: .top)
+
                             Divider()
-                            
+
                             BookingsSectionView()
-                                .frame(maxWidth: .infinity)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
                         }
                     } else {
-                        VStack {
-                            CategorySectionView()
+                        VStack(spacing: 0) {
+                            CategorySectionView(availableWidth: geo.size.width)
                                 .padding(.vertical, 10)
-                            
-                            
+
                             BookingsSectionView()
                         }
                     }

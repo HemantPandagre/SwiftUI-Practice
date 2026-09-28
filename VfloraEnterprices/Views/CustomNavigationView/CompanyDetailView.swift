@@ -11,11 +11,31 @@ struct CompanyDetailView: BaseView {
     var navigationBarConfig: NavigationBarConfig? { NavigationBarConfig(title: "Company Detail", defaultLogo: false)}
     
     var rootView: some View {
-        VStack {
-            appLoginIcon
-                .padding(.top, 50)
-            
-            
+        
+        GeometryReader { geo in
+            let isExpanded = geo.size.width > 700
+            if isExpanded {
+                HStack(alignment: .center, spacing: 0) {
+                    appLoginIcon
+                        .frame(maxWidth: .infinity)
+
+                    Divider()
+
+                    companyDetails(.center)
+                }
+            } else {
+                VStack {
+                    appLoginIcon
+                        .padding(.top, 50)
+                    
+                    companyDetails()
+                }
+            }
+        }
+    }
+    
+    func companyDetails(_ alignment: Alignment = .top) -> some View {
+        return VStack {
             VStack(alignment: .leading) {
                 Text("Vflora: \nElegance in Bloom")
                     .font(Font.title.bold())
@@ -29,10 +49,12 @@ struct CompanyDetailView: BaseView {
             }
             .padding()
             .padding(.horizontal, 30)
+            .frame(maxHeight: .infinity ,alignment: alignment)
             
             Spacer()
             CopyrightLabel()
                 .padding(10)
+            
         }
     }
     
