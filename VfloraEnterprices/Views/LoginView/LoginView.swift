@@ -8,12 +8,12 @@
 import SwiftUI
 import Combine
 
-
+enum LoginField: Hashable {
+    case username
+    case password
+}
 
 struct LoginView: BaseView {
-    enum LoginField {
-        case username, password
-    }
     
     var navigationBarConfig: NavigationBarConfig? { nil }
     
@@ -30,28 +30,66 @@ struct LoginView: BaseView {
     
     var rootView: some View {
         ZStack {
-            VStack {
-                VStack() {
-                    appLoginIcon
-                    
-                    VStack(spacing: 20) {
-                        welcomeText
-                        fieldsView
-                        forgotPasswordButton
-                        loginButton
-                        NavigationLink(destination: ProfileView(isSignup: true), isActive: $isSignupNav, label: {
-                            EmptyView()
-                        })
+            GeometryReader { geo in
+                let isExpanded = geo.size.width > 700
+                if isExpanded {
+                    HStack(spacing: 0) {
+                        appLoginIcon
+                            .frame(maxWidth: .infinity)
+                        
+                        Divider()
+                        
+                        //ScrollView {
+                        
+                        VStack(alignment: .center) {
+                            welcomeText
+                            Spacer()
+                            
+                            VStack(spacing: 20) {
+                                fieldsView
+                                forgotPasswordButton
+                                loginButton
+                                NavigationLink(destination: ProfileView(isSignup: true), isActive: $isSignupNav, label: {
+                                    EmptyView()
+                                })
+                            }
+                            
+                            Spacer()
+                            CopyrightLabel()
+                                .padding(10)
+                        }
+                        .padding(.top, 30)
+                        .padding(.horizontal, 30)
                     }
-                    .padding(.top, 30)
+                } else {
+                    ScrollView {
+                        VStack {
+                            VStack() {
+                                appLoginIcon
+                                
+                                VStack(spacing: 20) {
+                                    welcomeText
+                                    fieldsView
+                                    forgotPasswordButton
+                                    loginButton
+                                    NavigationLink(destination: ProfileView(isSignup: true), isActive: $isSignupNav, label: {
+                                        EmptyView()
+                                    })
+                                }
+                                .padding(.top, 30)
+                            }
+                            
+                            Spacer()
+                            CopyrightLabel()
+                                .padding(10)
+                        }
+                        .padding(.top, 30)
+                        .padding(.horizontal, 30)
+                    }
                 }
                 
-                Spacer()
-                CopyrightLabel()
-                    .padding(10)
+                
             }
-            .padding(.top, 30)
-            .padding(.horizontal, 30)
             
             if loader.isShowing {
                 GlobalLoaderView(message: "Logging in...")
@@ -76,7 +114,7 @@ struct LoginView: BaseView {
         }
         
     }
-    
+        
     var appLoginIcon: some View {
         Image("vfloraImage")
             .resizable()
@@ -97,12 +135,42 @@ struct LoginView: BaseView {
                 alignment: .bottom)
     }
     
+    func customImage(name: String) -> some View {
+        AnyView(
+            Image(systemName: name)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 20, height: 20)
+                .foregroundStyle(.gray)
+        )
+    }
+    
     var fieldsView: some View {
         Group {
-            CustomTextField.normalField(icon: "envelope", placeholder: "Enter username", focusState: $focusedField, fieldIdentifier: .username, fieldText: $viewmodel.loginData.username)
+           
+            let usernameField: CustomFieldAttribute<LoginField> = .init(
+                icon: CustomImageView {
+                    customImage(name: "envelope")
+                },
+                placeholder: "Enter username",
+                focusState: $focusedField,
+                fieldIdentifier: .username,
+                fieldText: $viewmodel.loginData.username
+            )
+            CustomTextField(usernameField)
             
             if !viewmodel.isForgotPassword {
-                CustomTextField.secureField(icon: "lock", placeholder: "Enter Password", focusState: $focusedField, fieldIdentifier: .password, fieldText: $viewmodel.loginData.password)
+                let passwordField: CustomFieldAttribute<LoginField> = .init(
+                    isSecure: true,
+                    icon: CustomImageView {
+                        customImage(name: "lock")
+                    },
+                    placeholder: "Enter Password",
+                    focusState: $focusedField,
+                    fieldIdentifier: .password,
+                    fieldText: $viewmodel.loginData.password
+                )
+                CustomTextField(passwordField)
             }
         }
     }
@@ -148,7 +216,7 @@ struct LoginView: BaseView {
                 }
             } label: {
                 Text(viewmodel.loginButtonText)
-                    .modifier(PrimaryButtonModifier())
+                    .primaryButtonStyle()
             }
             
             if !viewmodel.isForgotPassword {
@@ -158,7 +226,7 @@ struct LoginView: BaseView {
                     isSignupNav.toggle()
                 } label: {
                     Text("Signup")
-                        .modifier(SecondaryButtonModifier())
+                        .secondaryButtonStyle()
                 }
             }
         }
@@ -169,4 +237,6 @@ struct LoginView: BaseView {
 
 #Preview {
     LoginView()
+        .environmentObject(NavigationManager())
+        .environmentObject(LoaderService())
 }

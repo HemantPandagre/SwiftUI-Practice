@@ -7,6 +7,26 @@
 
 import SwiftUI
 
+extension View {
+    func primaryButtonStyle(opacity: Double = 1.0) -> some View {
+        modifier(
+            PrimaryButtonModifier(opacity: opacity)
+        )
+    }
+
+    func secondaryButtonStyle(opacity: Double = 1.0) -> some View {
+        modifier(
+            SecondaryButtonModifier(opacity: opacity)
+        )
+    }
+
+    func cancelButtonStyle(opacity: Double = 1.0) -> some View {
+        modifier(
+            CancelButtonModifier(opacity: opacity)
+        )
+    }
+}
+
 struct PrimaryButtonModifier: ViewModifier {
     var opacity: Double = 1.0
     

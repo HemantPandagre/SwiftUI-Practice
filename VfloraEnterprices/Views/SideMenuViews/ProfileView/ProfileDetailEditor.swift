@@ -58,7 +58,19 @@ struct ProfileDetailEditor: View {
             Text(heading)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .font(.headline)
-            CustomTextField.normalField(placeholder: placeHolder, focusState: focusState, fieldIdentifier: fieldIdentifier, fieldText: fieldText)
+            
+            let field: CustomFieldAttribute<ProfileField> = .init(
+                isSecure: false,
+                icon: CustomImageView {
+                    Image(systemName: "person.fill")
+                },
+                title: "",
+                placeholder: "Enter username",
+                focusState: focusState,
+                fieldIdentifier: fieldIdentifier,
+                fieldText: fieldText
+            )
+           CustomTextField(field)
         }
     }
     
@@ -68,14 +80,14 @@ struct ProfileDetailEditor: View {
                 validateAndSave()
             } label: {
                 Text("Save")
-                    .modifier(PrimaryButtonModifier())
+                    primaryButtonStyle()
             }
             
             Button {
                 isEditable.toggle()
             } label: {
                 Text("Cancel")
-                    .modifier(CancelButtonModifier())
+                    .cancelButtonStyle()
             }
         }
     }

@@ -23,7 +23,7 @@ enum Menu: String, CaseIterable {
         switch self {
         case .settings:  SettingView()
         case .addToCard: AddToCardView()
-        case .profile:   ProfileView()
+        case .profile:   NewProfileView()
         case .logout:    EmptyView() // Handled by alert
         }
     }
@@ -72,7 +72,7 @@ struct SideMenuView: View {
                 }
                 .frame(width: totalWidth * widthRatio, alignment: .leading)
                 .background(.white)
-                .modifier(BackgroundColorModifier(opacity: 0.1))
+                .themeStyle(opacity: 0.1)
                 .offset(x: isSidebarOpen ? 0 : -(totalWidth * widthRatio))
                 .animation(.easeInOut, value: isSidebarOpen)
             }
@@ -109,7 +109,7 @@ struct SideMenuView: View {
             
             Spacer()
         }
-        .modifier(BackgroundColorModifier()) // 🔥 width
+        .themeStyle()
     }
 
     func menuListView(proxy: GeometryProxy) -> some View {

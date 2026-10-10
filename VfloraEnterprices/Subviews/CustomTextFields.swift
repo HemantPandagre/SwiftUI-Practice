@@ -7,71 +7,134 @@
 
 import SwiftUI
 
-struct CustomTextField<Value: Hashable>: View {
-    let icon: String?
+struct CustomFieldAttribute<Value: Hashable> {
+    let isSecure: Bool?
+    let icon: CustomImageView?
+    let title: String?
     let placeholder: String
     let focusState: FocusState<Value?>.Binding
     let fieldIdentifier: Value
-    @Binding var fieldText: String
-    @State private var isSecure: Bool = false
-    @State private var eyeButtonEnabled: Bool
+    let fieldText: Binding<String>
 
-    
-    // MARK: - Init #1 (primary): covers both normal and password fields
-     private init(icon: String?, placeholder: String, focusState: FocusState<Value?>.Binding, fieldIdentifier: Value, fieldText: Binding<String>, isSecure: Bool = false) {
-          self.icon = icon
-          self.placeholder = placeholder
-          self.focusState = focusState
-          self.fieldIdentifier = fieldIdentifier
-          self._fieldText = fieldText
-          self._isSecure = State(initialValue: isSecure ? true : false)
-          self.eyeButtonEnabled = isSecure
-      }
+    init(
+        isSecure: Bool? = nil,
+        icon: CustomImageView? = nil,
+        title: String? = nil,
+        placeholder: String,
+        focusState: FocusState<Value?>.Binding,
+        fieldIdentifier: Value,
+        fieldText: Binding<String>
+    ) {
+        self.isSecure = isSecure
+        self.icon = icon
+        self.title = title
+        self.placeholder = placeholder
+        self.focusState = focusState
+        self.fieldIdentifier = fieldIdentifier
+        self.fieldText = fieldText
+    }
+}
 
+struct CustomTextField<Value: Hashable>: View {
+
+    private let fieldAttribute: CustomFieldAttribute<Value>
+
+    @Binding private var fieldText: String
+    @State private var hideText: Bool = false
     
+    init(_ fieldAttribute: CustomFieldAttribute<Value>) {
+        self.fieldAttribute = fieldAttribute
+        self._fieldText = fieldAttribute.fieldText
+        self._hideText = State(initialValue: fieldAttribute.isSecure ?? false)
+    }
+
     var body: some View {
-        VStack() {
-            HStack() {
-                // Leading Icon
-                if let icon = icon, !icon.isEmpty {
-                  Image(systemName: icon)
-                        .foregroundColor(Color.secondary)
-                        .frame(width: 20, height: 30)
-                }
-
-                // Input Field
-                if isSecure {
-                    SecureField(placeholder, text: $fieldText)
-                        .focused(focusState, equals: fieldIdentifier)
-                } else {
-                    TextField(placeholder, text: $fieldText)
-                        .focused(focusState, equals: fieldIdentifier)
-                }
-                if eyeButtonEnabled {
-                    Button(action: { isSecure.toggle() }) {
-                        Image(systemName: isSecure ? "eye.slash" : "eye")
-                            .foregroundColor(.vfGray)
+        HStack(spacing: 10) {
+            if let icon = fieldAttribute.icon {
+                icon
+                    .padding(.leading, 30)
+            }
+            
+            VStack(alignment: .leading) {
+                fieldTitle
+                if let isSecure = fieldAttribute.isSecure, isSecure {
+                    HStack {
+                        fieldView
+                        eyeButton
                     }
+                } else {
+                    fieldView
                 }
             }
-
-            // 1pt Bottom Border
-            Rectangle()
-                .fill(Color.vfGray.opacity(0.3))
-                .frame(height: 1)
+            .padding(.leading, fieldAttribute.icon == nil ? 30 : 0)
+        }
+        .padding(.vertical, 20)
+        .focused(
+            fieldAttribute.focusState,
+            equals: fieldAttribute.fieldIdentifier
+        )
+        .clipped()
+    }
+    
+    var fieldTitle: some View {
+        Group {
+            if let title = fieldAttribute.title,
+               !title.isEmpty {
+                Text(title)
+                    .font(.system(size: 17, weight: .bold))
+            } else {
+                EmptyView()
+            }
+        }
+    }
+    
+    var fieldView: some View {
+        return Group {
+            if hideText {
+                SecureField(fieldAttribute.placeholder, text: $fieldText)
+            } else {
+                TextField(fieldAttribute.placeholder, text: $fieldText)
+            }
+        }
+        .font(.system(size: 15, weight: .bold))
+        .foregroundStyle(.gray)
+    }
+    
+    var eyeButton: some View {
+        Button(action: { self.hideText.toggle() }) {
+            Image(systemName: !self.hideText ? "eye.slash" : "eye")
+                .foregroundColor(.vfGray)
         }
     }
 }
 
-extension CustomTextField {
-    
-    static func normalField(icon: String? = nil, placeholder: String, focusState: FocusState<Value?>.Binding, fieldIdentifier: Value, fieldText: Binding<String>) -> CustomTextField {
-        .init(icon: icon, placeholder: placeholder, focusState: focusState, fieldIdentifier: fieldIdentifier, fieldText: fieldText)
-    }
-    
-    static func secureField(icon: String? = nil, placeholder: String, focusState: FocusState<Value?>.Binding, fieldIdentifier: Value, fieldText: Binding<String>) -> CustomTextField {
-        .init(icon: icon, placeholder: placeholder, focusState: focusState, fieldIdentifier: fieldIdentifier, fieldText: fieldText, isSecure: true)
+private struct PreviewContainer: View {
+
+    @State private var username = ""
+
+    @FocusState private var focusedField: LoginField?
+
+    var body: some View {
+
+        let field: CustomFieldAttribute<LoginField> = .init(
+            isSecure: true,
+            icon: CustomImageView {
+                Image(systemName: "person.fill")
+            },
+            placeholder: "Enter username",
+            focusState: $focusedField,
+            fieldIdentifier: .username,
+            fieldText: $username
+        )
+
+        VStack(spacing: 20) {
+            CustomTextField(field)
+                .frame(maxWidth: .infinity)
+        }
+        .padding()
     }
 }
 
-
+#Preview {
+    PreviewContainer()
+}

@@ -18,10 +18,12 @@ extension BaseView {
     
     var body: some View {
         NavigationSyncView(config: navigationBarConfig) {
-            rootView
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .clipped()
-                .modifier(BackgroundColorModifier(opacity: 0.1))
+            GeometryReader { geo in
+                rootView
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .clipped()
+                    .themeStyle(opacity: 0.1)
+            }
         }
         .navigationBarHidden(true)
     }

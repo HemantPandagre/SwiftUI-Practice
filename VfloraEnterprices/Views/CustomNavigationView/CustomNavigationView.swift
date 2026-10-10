@@ -76,7 +76,7 @@ struct CustomNavigationView: View {
                     .padding(.horizontal, 60) // protect from overlapping buttons
                     .frame(maxWidth: .infinity, alignment: .center)
             }
-            .modifier(BackgroundColorModifier())
+            .themeStyle()
         }
     }
 }

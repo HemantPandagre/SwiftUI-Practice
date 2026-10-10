@@ -42,7 +42,7 @@ struct ProfileDetailViewer: View {
                 isEditable.toggle()
             } label: {
                 Text("Edit")
-                    .modifier(PrimaryButtonModifier())
+                    .primaryButtonStyle()
             }
         }
     }

@@ -18,3 +18,13 @@ struct BackgroundColorModifier: ViewModifier {
                     startPoint: .topLeading, endPoint: .bottomTrailing).opacity(opacity) )
     }
 }
+
+extension View {
+    func themeStyle(opacity: Double = 1.0) -> some View {
+        modifier(
+            BackgroundColorModifier(
+                opacity: opacity
+            )
+        )
+    }
+}
