@@ -30,6 +30,10 @@ struct CustomNavigationView: View {
         VStack(spacing: 0) {
             ZStack {
                 // Main bar content: left & right actions
+                Color.clear
+                    .themeStyle()
+                    .ignoresSafeArea()
+                
                 HStack {
                     HStack(spacing: 12) {
                         if config.defaultBack {
@@ -64,8 +68,7 @@ struct CustomNavigationView: View {
                         }
                     }
                 }
-                .padding(.horizontal, 12)
-                .frame(height: 52)
+                .padding(.leading, 30)
                 
                 // Centered title overlays the button area
                 Text(config.title)
@@ -76,7 +79,7 @@ struct CustomNavigationView: View {
                     .padding(.horizontal, 60) // protect from overlapping buttons
                     .frame(maxWidth: .infinity, alignment: .center)
             }
-            .themeStyle()
+            .frame(height: 44.0)
         }
     }
 }

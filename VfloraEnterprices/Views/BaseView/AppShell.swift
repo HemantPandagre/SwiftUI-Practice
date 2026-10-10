@@ -14,9 +14,11 @@ struct AppShell: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            
             if let config = navManager.currentConfig {
                 CustomNavigationView(navManager: navManager, config: config)
             }
+            
             NavigationView {
                 if user?.loginStatus == .loggedIn {
                     DashboardView()

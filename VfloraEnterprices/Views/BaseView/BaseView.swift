@@ -19,10 +19,15 @@ extension BaseView {
     var body: some View {
         NavigationSyncView(config: navigationBarConfig) {
             GeometryReader { geo in
-                rootView
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .clipped()
-                    .themeStyle(opacity: 0.1)
+                ZStack {
+                    Color.clear
+                        .themeStyle(opacity: 0.1)
+                        .ignoresSafeArea()
+                    
+                    rootView
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .clipped()
+                }
             }
         }
         .navigationBarHidden(true)
