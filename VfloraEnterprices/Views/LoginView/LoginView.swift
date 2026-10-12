@@ -91,9 +91,6 @@ struct LoginView: BaseView {
                 
             }
             
-            if loader.isShowing {
-                GlobalLoaderView(message: "Logging in...")
-            }
         }
         .onAppear(perform: {
             if user == nil {
@@ -149,9 +146,11 @@ struct LoginView: BaseView {
         Group {
            
             let usernameField: CustomFieldAttribute<LoginField> = .init(
+                bottomBorder: true,
                 icon: CustomImageView {
                     customImage(name: "envelope")
                 },
+                
                 placeholder: "Enter username",
                 focusState: $focusedField,
                 fieldIdentifier: .username,
@@ -162,6 +161,7 @@ struct LoginView: BaseView {
             if !viewmodel.isForgotPassword {
                 let passwordField: CustomFieldAttribute<LoginField> = .init(
                     isSecure: true,
+                    bottomBorder: true,
                     icon: CustomImageView {
                         customImage(name: "lock")
                     },
@@ -204,7 +204,7 @@ struct LoginView: BaseView {
                 if (viewmodel.isForgotPassword) {
                     viewmodel.forgotPasswordToggle()
                 } else {
-                    loader.show()
+                    loader.show("Logging in...")
                     viewmodel.successHandler = {
                         user?.setDummyData()
                         user?.loginStatus = .loggedIn

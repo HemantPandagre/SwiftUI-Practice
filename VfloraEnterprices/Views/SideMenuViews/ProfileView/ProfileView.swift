@@ -12,7 +12,6 @@ struct ProfileView: BaseView {
     var navigationBarConfig: NavigationBarConfig? { NavigationBarConfig(title: isSignup ? "Signup" : "Profile") }
     
     @AppStorageCodable("currentUser") var user: User?
-    @EnvironmentObject var loader: LoaderService
     @State private var isEditable: Bool = false
     @State var isSignup: Bool = false
     
@@ -34,9 +33,6 @@ struct ProfileView: BaseView {
             }
             .padding(.horizontal, 20)
             
-            if loader.isShowing {
-                GlobalLoaderView(message: "Saving User Details...")
-            }
         }
     }
 }

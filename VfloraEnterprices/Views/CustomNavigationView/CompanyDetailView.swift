@@ -24,11 +24,16 @@ struct CompanyDetailView: BaseView {
                     companyDetails(.center)
                 }
             } else {
-                VStack {
-                    appLoginIcon
-                        .padding(.top, 50)
-                    
-                    companyDetails()
+                ScrollView(showsIndicators: false) {
+                    VStack {
+                        Image("vfloraImage")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 150, height: 150)
+                            //.padding(.top, 50)
+                        
+                        companyDetails()
+                    }
                 }
             }
         }
@@ -37,19 +42,19 @@ struct CompanyDetailView: BaseView {
     func companyDetails(_ alignment: Alignment = .top) -> some View {
         return VStack {
             VStack(alignment: .leading) {
-                Text("Vflora: \nElegance in Bloom")
+                Text("SwiftUI: \nApple's Modern Language")
                     .font(Font.title.bold())
-                    .padding(.top, 20)
+                    //.padding(.top, 20)
                 
-                Text("Vflora is a premier floral design studio dedicated to the art of botanical storytelling. We specialize in creating sophisticated, custom arrangements that blend timeless elegance with modern flair. Whether for a grand event or a thoughtful personal gesture, Vflora transforms nature's finest elements into unforgettable visual experiences.")
+                Text("SwiftUI is Apple's modern, declarative software framework used to build native user interfaces across all Apple platforms—including iOS, iPadOS, macOS, watchOS, tvOS, and visionOS. SwiftUI is Apple's modern, declarative software framework used to build native user interfaces across all Apple platforms—including iOS, iPadOS, macOS, watchOS, tvOS, and visionOS.")
                     .padding(.top, 10)
-                    .font(Font.caption)
+                    .font(Font.body)
                     .foregroundStyle(.gray)
                     .lineSpacing(10)
             }
             .padding()
             .padding(.horizontal, 30)
-            .frame(maxHeight: .infinity ,alignment: alignment)
+            .frame(maxWidth: .infinity, alignment: alignment)
             
             Spacer()
             CopyrightLabel()

@@ -13,23 +13,29 @@ struct AppShell: View {
     @StateObject private var loader = LoaderService()
 
     var body: some View {
-        VStack(spacing: 0) {
-            
-            if let config = navManager.currentConfig {
-                CustomNavigationView(navManager: navManager, config: config)
-            }
-            
-            NavigationView {
-                if user?.loginStatus == .loggedIn {
-                    DashboardView()
-                } else {
-                    LoginView()
+        ZStack {
+            VStack(spacing: 0) {
+                
+                if let config = navManager.currentConfig {
+                    CustomNavigationView(navManager: navManager, config: config)
                 }
+                
+                NavigationView {
+                    if user?.loginStatus == .loggedIn {
+                        DashboardView()
+                    } else {
+                        LoginView()
+                    }
+                }
+                .navigationViewStyle(.stack)
+                .environmentObject(navManager)
             }
-            .navigationViewStyle(.stack)
-            .environmentObject(navManager)
+            .navigationBarHidden(true) // Hide the Apple default bar
+            
+            if loader.isShowing {
+                GlobalLoaderView(message: loader.message)
+            }
         }
         .environmentObject(loader)
-        .navigationBarHidden(true) // Hide the Apple default bar
     }
 }

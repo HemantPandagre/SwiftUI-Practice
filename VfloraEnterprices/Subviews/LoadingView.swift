@@ -9,8 +9,12 @@ import Combine
 
  class LoaderService: ObservableObject {
     @Published var isShowing: Bool = false
+    @Published var message: String = "Loading..."
     
-    func show() { isShowing = true }
+    func show(_ message: String = "Loading...") {
+        self.message = message
+        isShowing = true
+    }
     func hide() { isShowing = false }
 
     // optional async helper
@@ -28,7 +32,6 @@ struct GlobalLoaderView: View {
     var body: some View {
         ZStack {
             Color.black.opacity(0.4)
-                .ignoresSafeArea()
             
             ProgressView(message)
                 .padding()
@@ -36,6 +39,9 @@ struct GlobalLoaderView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 16))
                 .shadow(radius: 10)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .contentShape(Rectangle())
+        .ignoresSafeArea(.all)
     }
 }
 

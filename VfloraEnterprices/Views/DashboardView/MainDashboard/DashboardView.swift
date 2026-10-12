@@ -69,13 +69,12 @@ struct DashboardView: BaseView {
                     }
                 }
                 
-                if loader.isShowing {
-                    let message = isLoggingout ? "Logging out..." : "Loading Data..."
-                    GlobalLoaderView(message: message)
-                }
             }
             .onAppear {
                 selectedItem = nil
+                if loader.isShowing {
+                    loader.message = isLoggingout ? "Logging out..." : "Loading Data..."
+                }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     loader.hide()
                 }
@@ -91,10 +90,10 @@ struct DashboardView: BaseView {
     func logoutButton() -> some View {
         Button {
             isLoggingout = true
-            loader.isShowing = true
+            loader.show("Logging out...")
             DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
                 isLoggingout = false
-                loader.isShowing = false
+                loader.hide()
                 user?.loginStatus = .notLoggedIn
             })
         } label: {

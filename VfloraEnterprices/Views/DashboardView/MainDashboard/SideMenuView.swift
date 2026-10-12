@@ -49,6 +49,10 @@ struct SideMenuView: View {
             ZStack(alignment: .leading) {
                 if isSidebarOpen {
                     Color.black.opacity(0.4)
+                        .padding(.top, -proxy.safeAreaInsets.top)
+                        .padding(.bottom, -proxy.safeAreaInsets.bottom)
+                        .padding(.leading, -proxy.safeAreaInsets.leading)
+                        .padding(.trailing, -proxy.safeAreaInsets.trailing)
                         .ignoresSafeArea()
                         .onTapGesture {
                             withAnimation { isSidebarOpen.toggle() }
@@ -75,8 +79,12 @@ struct SideMenuView: View {
                 .themeStyle(opacity: 0.1)
                 .offset(x: isSidebarOpen ? 0 : -(totalWidth * widthRatio))
                 .animation(.easeInOut, value: isSidebarOpen)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                .clipped()
             }
+            .ignoresSafeArea()
         }
+        .ignoresSafeArea()
         //.background(Color(.white))
     }
     

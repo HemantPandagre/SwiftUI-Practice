@@ -26,7 +26,6 @@ extension BaseView {
                     
                     rootView
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .clipped()
                 }
             }
         }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CustomFieldAttribute<Value: Hashable> {
     let isSecure: Bool?
+    let bottomBorder: Bool?
     let icon: CustomImageView?
     let title: String?
     let placeholder: String
@@ -18,6 +19,7 @@ struct CustomFieldAttribute<Value: Hashable> {
 
     init(
         isSecure: Bool? = nil,
+        bottomBorder: Bool? = nil,
         icon: CustomImageView? = nil,
         title: String? = nil,
         placeholder: String,
@@ -26,6 +28,7 @@ struct CustomFieldAttribute<Value: Hashable> {
         fieldText: Binding<String>
     ) {
         self.isSecure = isSecure
+        self.bottomBorder = bottomBorder
         self.icon = icon
         self.title = title
         self.placeholder = placeholder
@@ -73,6 +76,14 @@ struct CustomTextField<Value: Hashable>: View {
             fieldAttribute.focusState,
             equals: fieldAttribute.fieldIdentifier
         )
+        .overlay {
+            if fieldAttribute.bottomBorder ?? false {
+                Rectangle()
+                    .frame(maxWidth: .infinity, maxHeight: 1.0)
+                    .foregroundColor(.gray.opacity(0.5))
+                    .padding(.top, 40)
+            }
+        }
         .clipped()
     }
     

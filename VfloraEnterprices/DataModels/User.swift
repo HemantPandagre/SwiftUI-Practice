@@ -48,8 +48,8 @@ struct User: Codable {
         self.firstName = "Hemant"
         self.lastName = "Pandagre"
         self.profilePicture = "https://avatars.githubusercontent.com/u/400000?s=200&v=4"
-        self.designation = "Senior iOS Developer"
-        self.address = "Ulwe, navi mumbai, 410206"
+        self.designation = "iPhone App Developer"
+        self.address = "Navi mumbai, 410206"
         self._email = Email("hemant@gmail.com")
         self._phone = Phone("99269-90876")
                         

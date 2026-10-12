@@ -87,7 +87,7 @@ extension NewProfileView {
     }
     
     var designation: some View {
-        Text("Senior iOS Developer")
+        Text("iPhone App Developer")
             .frame(maxWidth: .infinity, alignment: .center)
             .font(.system(size: 20))
             .padding(.bottom, 10)

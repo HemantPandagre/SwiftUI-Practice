@@ -120,7 +120,7 @@ extension ProfileDetailEditor {
 
             
             user = fieldData
-            loader.show()
+            loader.show("Saving User Details...")
             DispatchQueue.main.asyncAfter(deadline: .now()+2) {
                 loader.hide()
                 if isSignup {
